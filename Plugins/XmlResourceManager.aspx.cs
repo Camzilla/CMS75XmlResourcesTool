@@ -1,74 +1,80 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Web.Configuration;
-using System.Web.UI.WebControls;
-using System.Xml;
-using EPiServer;
-using EPiServer.Data.Dynamic;
-using EPiServer.DataAbstraction;
-using EPiServer.PlugIn;
-using EPiServer.ServiceLocation;
-using EPiServer.Shell.WebForms;
-using EPiServer.UI.WebControls;
-using EPiServer.Web;
-
-namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins
+namespace Piab.CMS.Business.Plugins.Common
 {
-    [GuiPlugIn(DisplayName = "Xml resource manager", Area = PlugInArea.AdminMenu, Url = "~/Plugins/XmlResourceManager.aspx")]
-    public partial class XmlResourceManager : WebFormsBase
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading;
+    using System.Web.Configuration;
+    using System.Web.UI.WebControls;
+    using System.Xml;
+
+    using EPiServer;
+    using EPiServer.DataAbstraction;
+    using EPiServer.PlugIn;
+    using EPiServer.ServiceLocation;
+    using EPiServer.UI.WebControls;
+
+    [GuiPlugIn(
+        DisplayName = "Xml resource manager",
+        Area = PlugInArea.AdminMenu,
+        Url = "~/Business/Plugins/Common/XmlResourceManager.aspx")]
+    public partial class XmlResourceManager : EPiServer.Shell.WebForms.WebFormsBase 
     {
         #region vars
 
-        private const string viewsfilenamepostfix = "_";
-        private const string viewsxmlfilenametemplate = "Views{0}.xml";
-        private const string xmlfilenametemplate = "{0}_{1}.xml";
-        private string _captionText = "";
-        private string _description = "";
-        private string _helpText = "";
-        private string _propName = "";
-        private string _typeName = "";
-        private string viewsxmlfilename = "/Resources/LanguageFiles/Views{0}.xml";
         private string xmlfilename = "/Resources/LanguageFiles/{0}_{1}.xml";
-
-        #endregion
-
-        #region enumbs
-
-        private enum PropertyListType
-        {
-            Block,
-            BlockGeneral,
-            PageTypeGeneral
-        }
+        private string viewsxmlfilename = "/Resources/LanguageFiles/Views{0}.xml";
+        private const string Xmlfilenametemplate = "{0}_{1}.xml";
+        private const string Viewsxmlfilenametemplate = "Views{0}.xml";
+        private const string Viewsfilenamepostfix = "_";
 
         #endregion
 
         #region Inner classes
-
-        protected class TypePropertyResultItem
-        {
-            public string TypeName { get; set; }
-            public string PropertyName { get; set; }
-            public string DisplayName { get; set; }
-            public string Description { get; set; }
-        }
 
         protected class ViewResultItem
         {
             public string ContainingElementNameForDisplay { get; set; }
             public string ContainingElementName { get; set; }
             public string ElementName { get; set; }
+            public string MasterElementValue { get; set; }
             public string ElementValue { get; set; }
+            public string XPath { get; set; }
         }
 
         #endregion
 
         #region Overrides
+
+        protected override void OnPreInit(EventArgs e)
+        {
+            base.OnPreInit(e);
+            this.MasterPageFile = UriSupport.ResolveUrlFromUIBySettings("MasterPages/EPiServerUI.master");
+            this.SystemMessageContainer.Heading = "Translation for Piab.com";
+            this.SystemMessageContainer.Description = "Select your language and start translating! Empty fields will be marked yellow.";
+         
+        }
+
+        protected override void OnInit(EventArgs e)
+        {
+            this.DdlSelectLanguage.SelectedIndexChanged += this.Refresh;
+            this.ViewsControl.RowDataBound += ViewsControlRowDataBound;
+            base.OnInit(e);
+        }
+
+        static void ViewsControlRowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            var textbox = (TextBox)e.Row.Cells[4].FindControl("ElementValue");
+            var item = e.Row.DataItem as ViewResultItem;
+            if (item != null && string.IsNullOrWhiteSpace(item.ElementValue))
+            {
+                textbox.BackColor = Color.LightGoldenrodYellow;
+            }
+        }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -77,15 +83,15 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins
             var path = WebConfigurationManager.AppSettings.Get("resourcemanagerpath");
             if (string.IsNullOrEmpty(path))
             {
-                path = "/lang/";
+                path = "/Resources/LanguageFiles/";
             }
 
-            this.xmlfilename = path + xmlfilenametemplate;
-            this.viewsxmlfilename = path + viewsxmlfilenametemplate;
+            this.xmlfilename = path + Xmlfilenametemplate;
+            this.viewsxmlfilename = path + Viewsxmlfilenametemplate;
 
             var repository = ServiceLocator.Current.GetInstance<ILanguageBranchRepository>();
 
-            if (IsPostBack)
+            if (this.IsPostBack)
             {
                 return;
             }
@@ -96,15 +102,8 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins
             this.DdlSelectLanguage.DataBind();
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(this.DdlSelectLanguage.SelectedValue);
-            Inits();
-        }
 
-        protected override void OnPreInit(EventArgs e)
-        {
-            base.OnPreInit(e);
-            MasterPageFile = UriSupport.ResolveUrlFromUIBySettings("MasterPages/EPiServerUI.master");
-            SystemMessageContainer.Heading = Translate("/xmlresourcemanager/heading");
-            SystemMessageContainer.Description = Translate("/xmlresourcemanager/description");
+            this.Inits();
         }
 
         #endregion
@@ -113,257 +112,42 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins
 
         protected void CreateXml(object sender, EventArgs e)
         {
-            CreateLangXmlFiles(((ToolButton)sender).CommandName);
+            this.CreateLangXmlFiles(((ToolButton)sender).CommandName);
             Thread.Sleep(2000);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(this.DdlSelectLanguage.SelectedValue);
-            Inits();
+            this.Inits();
+
         }
 
-        protected void Refresh(object sender, EventArgs e)
+        private void Refresh(object sender, EventArgs e)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(this.DdlSelectLanguage.SelectedValue);
-            Inits();
+            this.Inits();
         }
 
         #endregion
 
         #region Methods
 
-        private void AddBlocksTranslations(XmlDocument doc, XmlNode root)
+        private void Inits()
         {
-            XmlNode contentTypes = doc.CreateElement("contenttypes");
-            root.AppendChild(contentTypes);
+            var lang = this.DdlSelectLanguage.SelectedValue;
 
-            foreach (GridViewRow item in this.BlockViewControl.Rows)
+            var masterLangElements = this.GetViewElements("en-GB");
+
+            var currentLangElements = this.GetViewElements(lang);
+
+            foreach (var masterLangItem in masterLangElements)
             {
-                var displayName = ((TextBox)item.FindControl("BlockTypeDisplayName")).Text;
-                var descriptionText = ((TextBox)item.FindControl("BlockTypeDescription")).Text;
-                var typeName = ((Label)item.FindControl("LblBlockName")).Text;
+                var currentLangItem = currentLangElements.FirstOrDefault(i => i.XPath.Equals(masterLangItem.XPath));
 
-                XmlNode contentTypeNode = doc.CreateElement(typeName);
-
-                XmlNode name = doc.CreateElement("name");
-                name.AppendChild(doc.CreateTextNode(displayName));
-                contentTypeNode.AppendChild(name);
-
-                XmlNode description = doc.CreateElement("description");
-                description.AppendChild(doc.CreateTextNode(descriptionText));
-                contentTypeNode.AppendChild(description);
-
-                contentTypes.AppendChild(contentTypeNode);
+                masterLangItem.MasterElementValue = masterLangItem.ElementValue;
+                masterLangItem.ElementValue = currentLangItem != null ? currentLangItem.ElementValue : string.Empty;
             }
-        }
 
-        private void AddCategoriesTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode categoriesNode = doc.CreateElement("categories");
-            root.AppendChild(categoriesNode);
-
-            foreach (GridViewRow item in this.CategoriesViewControl.Rows)
-            {
-                this._description = ((TextBox)item.FindControl("TxtCategory")).Text;
-                this._propName = ((Label)item.FindControl("LblCategoryName")).Text;
-
-                XmlNode catNode = doc.CreateElement("category");
-                var pageTypename = doc.CreateAttribute("name");
-                pageTypename.Value = this._propName;
-
-                if (catNode.Attributes != null)
-                {
-                    catNode.Attributes.Append(pageTypename);
-                }
-
-                XmlNode description = doc.CreateElement("description");
-                description.AppendChild(doc.CreateTextNode(this._description));
-                catNode.AppendChild(description);
-                categoriesNode.AppendChild(catNode);
-            }
-        }
-
-        private void AddContentTypesTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode contentTypes = doc.CreateElement("contenttypes");
-            root.AppendChild(contentTypes);
-
-            foreach (GridViewRow item in this.PageTypeViewControl.Rows)
-            {
-                var displayName = ((TextBox)item.FindControl("TxtTypeDisplayName")).Text;
-                var descriptionText = ((TextBox)item.FindControl("TxtTypeDescription")).Text;
-                var typeName = ((Label)item.FindControl("LblPTypeName")).Text;
-
-                XmlNode pageTypeNode = doc.CreateElement(typeName);
-
-                XmlNode name = doc.CreateElement("name");
-                name.AppendChild(doc.CreateTextNode(displayName));
-                pageTypeNode.AppendChild(name);
-
-                XmlNode description = doc.CreateElement("description");
-                description.AppendChild(doc.CreateTextNode(descriptionText));
-                pageTypeNode.AppendChild(description);
-
-                contentTypes.AppendChild(pageTypeNode);
-            }
-        }
-
-        private void AddDisplayChannelsTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode channels = doc.CreateElement("displaychannels");
-            root.AppendChild(channels);
-
-            foreach (GridViewRow item in this.ChannelsViewControl.Rows)
-            {
-                var channelDisplayName = ((TextBox)item.FindControl("DisplayChannelDisplayName")).Text;
-                var channelName = ((Label)item.FindControl("DisplayChannelName")).Text;
-
-                XmlNode channel = doc.CreateElement("displaychannel");
-                var nameAttribute = doc.CreateAttribute("name");
-                nameAttribute.Value = channelName;
-                if (channel.Attributes != null)
-                {
-                    channel.Attributes.Append(nameAttribute);
-                }
-
-                XmlNode name = doc.CreateElement("name");
-                name.AppendChild(doc.CreateTextNode(channelDisplayName));
-                channel.AppendChild(name);
-                channels.AppendChild(channel);
-            }
-        }
-
-        private void AddDisplayResolutionsTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode resolutions = doc.CreateElement("resolutions");
-            root.AppendChild(resolutions);
-
-            foreach (GridViewRow item in this.ResolutionsViewControl.Rows)
-            {
-                var resolutionDisplayName = ((TextBox)item.FindControl("ResolutionDisplayName")).Text;
-                var resolutionlName = ((Label)item.FindControl("ResolutionName")).Text;
-
-                XmlNode name = doc.CreateElement(resolutionlName);
-                name.AppendChild(doc.CreateTextNode(resolutionDisplayName));
-
-                resolutions.AppendChild(name);
-            }
-        }
-
-        private void AddGroupNameTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode groupsNode = doc.CreateElement("groups");
-            root.AppendChild(groupsNode);
-
-            foreach (GridViewRow item in this.TabViewControl.Rows)
-            {
-                this._description = ((TextBox)item.FindControl("TabDisplayName")).Text;
-                this._propName = ((Label)item.FindControl("LblTabName")).Text;
-
-                XmlNode group = doc.CreateElement(this._propName);
-                group.AppendChild(doc.CreateTextNode(this._description));
-                groupsNode.AppendChild(group);
-            }
-        }
-
-        private void AddPropertiesTranslations(XmlDocument doc, XmlNode root, PropertyListType type)
-        {
-            XmlNode contentTypes = doc.CreateElement("contenttypes");
-
-            switch (type)
-            {
-                case PropertyListType.PageTypeGeneral:
-                
-                    XmlNode pageData = doc.CreateElement("icontentdata");
-                    XmlNode properties = doc.CreateElement("properties");
-                    pageData.AppendChild(properties);
-                    contentTypes.AppendChild(pageData);
-                    root.AppendChild(contentTypes);
-
-                    foreach (GridViewRow item in this.PropertiesViewControl.Rows)
-                    {
-                        this._captionText = ((TextBox)item.FindControl("TxtPropCaption")).Text;
-                        this._helpText = ((TextBox)item.FindControl("TxtPropHelp")).Text;
-                        this._propName = ((Label)item.FindControl("LblProp")).Text;
-
-                        XmlNode propertyNode = doc.CreateElement(this._propName.ToLower());
-
-                        XmlNode caption = doc.CreateElement("caption");
-                        caption.AppendChild(doc.CreateTextNode(this._captionText));
-                        propertyNode.AppendChild(caption);
-
-                        XmlNode helptext = doc.CreateElement("help");
-                        helptext.AppendChild(doc.CreateTextNode(this._helpText));
-                        propertyNode.AppendChild(helptext);
-
-                        properties.AppendChild(propertyNode);
-                    }
-                
-                break;
-                case PropertyListType.BlockGeneral:
-                break;
-                case PropertyListType.Block:
-                
-                    XmlNode typeNode = null;
-                    XmlNode propertiesElement = null;
-
-                    foreach (GridViewRow item in this.BlockPropertiesViewControl.Rows)
-                    {
-                        this._captionText = ((TextBox)item.FindControl("TxtBlockPropCaption")).Text;
-                        this._helpText = ((TextBox)item.FindControl("TxtBlockPropDescription")).Text;
-                        this._propName = ((Label)item.FindControl("LblBlockPropertyName")).Text;
-                        this._typeName = ((Label)item.FindControl("LblBlockType")).Text;
-
-                        if (!string.IsNullOrEmpty(this._typeName))
-                        {
-                            typeNode = doc.CreateElement(this._typeName);
-                            propertiesElement = doc.CreateElement("properties");
-                            typeNode.AppendChild(propertiesElement);
-                        }
-
-                        XmlNode propertytypeNode = doc.CreateElement(this._propName);
-                        if (propertiesElement != null)
-                        {
-                            propertiesElement.AppendChild(propertytypeNode);
-                        }
-
-                        XmlNode caption = doc.CreateElement("caption");
-                        caption.AppendChild(doc.CreateTextNode(this._captionText));
-                        propertytypeNode.AppendChild(caption);
-
-                        XmlNode helptext = doc.CreateElement("help");
-                        helptext.AppendChild(doc.CreateTextNode(this._helpText));
-                        propertytypeNode.AppendChild(helptext);
-
-                        contentTypes.AppendChild(typeNode);
-                    }
-
-                    root.AppendChild(contentTypes);
-                
-                break;
-            }
-        }
-
-        private void AddViewsTranslations(XmlDocument doc, XmlNode root)
-        {
-            XmlNode currentnode = null;
-            foreach (GridViewRow item in this.ViewsControl.Rows)
-            {
-                var view = ((Label)item.FindControl("LblView")).Text;
-                var container = ((Label)item.FindControl("LblElementContainer")).Text;
-                var element = ((Label)item.FindControl("LblElement")).Text;
-                var elementvalue = ((TextBox)item.FindControl("ElementValue")).Text;
-
-                if (!string.IsNullOrEmpty(view))
-                {
-                    currentnode = doc.CreateElement(container);
-                    root.AppendChild(currentnode);
-                }
-
-                if (currentnode != null)
-                {
-                    XmlNode node = doc.CreateElement(element);
-                    node.AppendChild(doc.CreateTextNode(elementvalue));
-                    currentnode.AppendChild(node);
-                }
-            }
+            this.UntranslatedFrases = masterLangElements.Count - currentLangElements.Count;
+            this.ViewsControl.DataSource = masterLangElements;
+            this.ViewsControl.DataBind();
         }
 
         private void CreateLangXmlFiles(string type)
@@ -393,284 +177,183 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins
             languagesNode.AppendChild(languageNode);
 
             type = type.ToLower();
+            
+            this.AddViewsTranslations(doc);
 
-            switch (type)
+            doc.Save(type == "views" ? this.Server.MapPath(string.Format(this.viewsxmlfilename, Viewsfilenamepostfix + this.DdlSelectLanguage.SelectedItem.Value)) 
+                : this.Server.MapPath(string.Format(this.xmlfilename, typeUpperCase, this.DdlSelectLanguage.SelectedItem.Value)));
+        }
+
+        private XmlNode CreateXpathIfRequired(XmlDocument doc, string xpath, string tagName)
+        {
+
+                var element = doc.SelectSingleNode(xpath);
+                if (element != null) return element;
+
+                var lastIndex = xpath.LastIndexOf('/');
+                var shorterPath = xpath.Substring(0, lastIndex);
+                var newLastIndex = shorterPath.LastIndexOf('/');
+            var newTagName = shorterPath.Substring(newLastIndex + 1);
+
+                    var parentNode = doc.SelectSingleNode(shorterPath) ?? this.CreateXpathIfRequired(doc, shorterPath, newTagName);
+                    var newNode = doc.CreateElement(tagName);
+                    parentNode.AppendChild(newNode);
+                    return newNode;
+        }
+
+        private void AddViewsTranslations(XmlDocument doc)
+        {
+            foreach (GridViewRow item in this.ViewsControl.Rows)
             {
-                case "BlocktypePropertyUniqueNames":
-                    AddPropertiesTranslations(doc, languageNode, PropertyListType.BlockGeneral);
-                    break;
-                case "pagetypepropertynames":
-                    AddPropertiesTranslations(doc, languageNode, PropertyListType.PageTypeGeneral);
-                    break;
-                case "blocktypepropertynames":
-                    AddPropertiesTranslations(doc, languageNode, PropertyListType.Block);
-                    break;
-                case "pagetypes":
-                    AddContentTypesTranslations(doc, languageNode);
-                    break;
-                case "blocks":
-                    AddBlocksTranslations(doc, languageNode);
-                    break;
-                case "groupnames":
-                    AddGroupNameTranslations(doc, languageNode);
-                    break;
-                case "categories":
-                    AddCategoriesTranslations(doc, languageNode);
-                    break;
-                case "views":
-                    AddViewsTranslations(doc, languageNode);
-                    break;
-                case "displaychannels":
-                    AddDisplayChannelsTranslations(doc, languageNode);
-                    break;
-                case "displayresolutions":
-                    AddDisplayResolutionsTranslations(doc, languageNode);
-                    break;
-            }
+                var newTranslation = ((TextBox)item.FindControl("ElementValue")).Text;
+                var xpath = "//language/" + ((Label)item.FindControl("XPath")).Text;
 
-            doc.Save(type == "views"
-                    ? Server.MapPath(string.Format(this.viewsxmlfilename, viewsfilenamepostfix + this.DdlSelectLanguage.SelectedItem.Value))
-                    : Server.MapPath(string.Format(this.xmlfilename, typeUpperCase, this.DdlSelectLanguage.SelectedItem.Value)));
-        }
-        
-        private IEnumerable<BlockType> GetBlockTypes()
-        {
-            var repository = new BlockTypeRepository(Locate.Advanced.GetInstance<IContentTypeRepository>());
-            return repository.List().OrderBy(p => p.Name);
-        }
+                var element = ((Label)item.FindControl("LblElement")).Text;
 
-        private IList GetCategories()
-        {
-            return Category.GetRoot().GetList();
-        }
-
-        private IList<DisplayChannel> GetDisplayChannels()
-        {
-            return Locate.DisplayChannelService().Channels;
-        }
-
-        private IEnumerable<IDisplayResolution> GetDisplayResolutions()
-        {
-            var helper = new ServiceLocationHelper(ServiceLocator.Current);
-            var resolutionservice = helper.Advanced.GetInstance<DisplayResolutionService>();
-            return resolutionservice.Resolutions;
-        }
-
-        private IEnumerable<PageType> GetPageTypes()
-        {
-            return ServiceLocator.Current.GetInstance<PageTypeRepository>().List().OrderBy(p => p.Name);
-        }
-
-        private List<TypePropertyResultItem> GetPropertiesByBlock()
-        {
-            var types = GetBlockTypes();
-            var blockproperties = new List<TypePropertyResultItem>();
-
-            foreach (var type in types)
-            {
-                blockproperties.AddRange(type.PropertyDefinitions.Select((def, i) =>
-                        new TypePropertyResultItem
-                        {
-                                TypeName = i == 0 ? type.Name : string.Empty,
-                                PropertyName = def.Name,
-                                Description = def.TranslateDescription(),
-                                DisplayName = def.TranslateDisplayName()
-                        }));
-            }
-
-            return blockproperties;
-        }
-
-        private SortedDictionary<string, PropertyDefinition> GetPropertyDefinitions()
-        {
-            var definitions = new SortedDictionary<string, PropertyDefinition>();
-            var pageTypes = GetPageTypes();
-
-            foreach (var pType in pageTypes)
-            {
-                foreach (var propertyDefinition in pType.PropertyDefinitions)
+                if (!string.IsNullOrWhiteSpace(newTranslation))
                 {
-                    if (!definitions.ContainsKey(propertyDefinition.Name.ToLower()))
-                    {
-                        definitions.Add(propertyDefinition.Name.ToLower(), propertyDefinition);
-                    }
-                }
-            }
 
-            return definitions;
-        }
-
-        private IEnumerable<TabDefinition> GetTabNames()
-        {
-            return ServiceLocator.Current.GetInstance<ITabDefinitionRepository>().List();
-        }
-
-        private List<ViewResultItem> GetViewElements()
-        {
-            var result = new List<ViewResultItem>();
-            var viewElements = new List<string>();
-            const string Expression = "languages/language";
-            var doc = new XmlDocument();
-
-            var suffix = Server.MapPath(string.Format(this.viewsxmlfilename, viewsfilenamepostfix + this.DdlSelectLanguage.SelectedItem.Value));
-            var nosuffix = Server.MapPath(string.Format(this.viewsxmlfilename, ""));
-            try
-            {
-                if (File.Exists(suffix))
-                {
-                    doc.Load(suffix);
-                }
-                else if (File.Exists(nosuffix))
-                {
-                    doc.Load(nosuffix);
+                    var node = this.CreateXpathIfRequired(doc, xpath, element);
+                    node.AppendChild(doc.CreateTextNode(newTranslation));
                 }
                 else
                 {
-                    return result;
+                    continue;
                 }
-
-                viewElements.AddRange(from XmlElement rootelement in doc.SelectNodes(Expression + "/*") select rootelement.Name);
-
-                foreach (var relement in viewElements)
-                {
-                    var nodes = doc.SelectNodes(Expression + "/" + relement + "/*");
-                    if (nodes != null && nodes.Count == 0)
-                    {
-                        result.Add(new ViewResultItem { ContainingElementNameForDisplay = relement });
-                    }
-                    else
-                    {
-                        int x = 0;
-
-                        foreach (XmlElement element in nodes)
-                        {
-                            x++;
-                            result.Add(new ViewResultItem
-                                       {
-                                               ContainingElementNameForDisplay = (x == 1 ? relement : ""),
-                                               ContainingElementName = relement,
-                                               ElementName = element.Name,
-                                               ElementValue = element.InnerText
-                                       });
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                doc = null;
-            }
-
-            return result;
+             }
         }
 
-        private void Inits()
+        private static readonly string[] UninterestingNames = { "languages", "language" };
+
+        static string FindXPath(XmlNode node)
         {
-            //PageTypes
-            this.PageTypeViewControl.DataSource = GetPageTypes();
-            this.PageTypeViewControl.DataBind();
+            node = node.ParentNode;
+            var builder = new StringBuilder();
+            while (node != null)
+            {
+                switch (node.NodeType)
+                {
+                    case XmlNodeType.Attribute:
+                        builder.Insert(0, "/@" + node.Name);
+                        node = ((XmlAttribute)node).OwnerElement;
+                        break;
+                    case XmlNodeType.Element:
+                        if (UninterestingNames.Contains(node.Name))
+                            return builder.ToString().Substring(1);
 
-            //Page type properties
-            this.PropertiesViewControl.DataSource = GetPropertyDefinitions();
-            this.PropertiesViewControl.DataBind();
+                        builder.Insert(0, "/" + node.Name);
+                        node = node.ParentNode;
+                        break;
+                    case XmlNodeType.Document:
+                        return builder.ToString().Substring(1);
+                    default:
+                        throw new ArgumentException("Only elements and attributes are supported");
+                }
+            }
+            throw new ArgumentException("Node was not in a document");
+        }
 
-            //Tabs
-            this.TabViewControl.DataSource = GetTabNames();
-            this.TabViewControl.DataBind();
+        private void AddElementsRecursive(XmlNode parent, ICollection<ViewResultItem> collection, string containingElementNameForDisplay = null)
+        {
+            var x = 0;
 
-            //Block types
-            this.BlockViewControl.DataSource = GetBlockTypes();
-            this.BlockViewControl.DataBind();
+            var elements = parent.ChildNodes.OfType<XmlElement>().ToArray();
+            if (!elements.Any())
+            {
+                if (parent.ParentNode != null)
+                {
+                    collection.Add(new ViewResultItem
+                                   {
+                                       ContainingElementNameForDisplay = containingElementNameForDisplay,
+                                       ContainingElementName = parent.ParentNode.Name,
+                                       ElementName = parent.Name,
+                                       ElementValue = parent.InnerText,
+                                       XPath = FindXPath(parent) + "/" + parent.Name
+                                   });
+                }
+                return;
+            }
 
-            //Block properties per type
-            this.BlockPropertiesViewControl.DataSource = GetPropertiesByBlock();
-            this.BlockPropertiesViewControl.DataBind();
+            foreach (var element in elements)
+            {
+                x++;
+                this.AddElementsRecursive(element, collection, (x == 1 ? FindXPath(element) : null));
+            }
+        }
 
-            //Views
-            this.ViewsControl.DataSource = GetViewElements();
-            this.ViewsControl.DataBind();
+        private List<ViewResultItem> GetViewElements(string lang)
+        {
+            var result = new List<ViewResultItem>();
+            var viewelements = new List<string>();
+            const string Xpathexpression = "languages/language";
+            var doc = new XmlDocument();
 
-            //Categories
-            this.CategoriesViewControl.DataSource = GetCategories();
-            this.CategoriesViewControl.DataBind();
+            var suffix = this.Server.MapPath(string.Format(this.viewsxmlfilename, Viewsfilenamepostfix + lang));
 
-            //Display channels
-            this.ChannelsViewControl.DataSource = GetDisplayChannels();
-            this.ChannelsViewControl.DataBind();
+            if (File.Exists(suffix))
+            {
+                doc.Load(suffix);
+            }
+            else
+            {
+                return result;
+            }
 
-            //Display resolutions
-            this.ResolutionsViewControl.DataSource = GetDisplayResolutions();
-            this.ResolutionsViewControl.DataBind();
+            var xmlNodeList = doc.SelectNodes(Xpathexpression + "/*");
+
+            if (xmlNodeList != null)
+            {
+                foreach (XmlElement rootelement in xmlNodeList)
+                {
+                    viewelements.Add(rootelement.Name);
+                }
+            }
+
+            foreach (var relement in viewelements)
+            {
+                var nodes = doc.SelectNodes(Xpathexpression + "/" + relement + "/*");
+                if (nodes != null && nodes.Count == 0)
+                {
+                    result.Add(new ViewResultItem { ContainingElementNameForDisplay = relement });
+                }
+                else
+                {
+                    var x = 0;
+
+                    if (nodes == null)
+                    {
+                        continue;
+                    }
+
+                    var nodesWithoutElementChildren =
+                        nodes.Cast<XmlElement>().Where(e => !e.ChildNodes.OfType<XmlElement>().Any());
+                    var otherNodes = nodes.Cast<XmlElement>().Where(e => e.ChildNodes.OfType<XmlElement>().Any());
+
+                    foreach (var element in nodesWithoutElementChildren)
+                    {
+                        x++;
+                        this.AddElementsRecursive(element, result, (x == 1 ? relement : null));
+                    }
+
+                    foreach (var element in otherNodes)
+                    {
+                        x++;
+                        this.AddElementsRecursive(element, result, (x == 1 ? relement : null));
+                    }
+                }
+            }
+            return result;
         }
 
         #endregion
 
         #region GetDataItems
 
-        protected ContentType PType
-        {
-            get
-            {
-                return Page.GetDataItem() as ContentType;
-            }
-        }
-        protected PropertyDefinition PDefinition
-        {
-            get
-            {
-                return ((KeyValuePair<string, PropertyDefinition>)Page.GetDataItem()).Value as PropertyDefinition;
-            }
-        }
-        protected TabDefinition TabDefinition
-        {
-            get
-            {
-                return Page.GetDataItem() as TabDefinition;
-            }
-        }
-        protected BlockType BType
-        {
-            get
-            {
-                return Page.GetDataItem() as BlockType;
-            }
-        }
-        protected Category CategoryType
-        {
-            get
-            {
-                return Page.GetDataItem() as Category;
-            }
-        }
-        protected ViewResultItem Element
-        {
-            get
-            {
-                return Page.GetDataItem() as ViewResultItem;
-            }
-        }
-        protected TypePropertyResultItem BDefinition
-        {
-            get
-            {
-                return Page.GetDataItem() as TypePropertyResultItem;
-            }
-        }
-        protected DisplayChannel Channel
-        {
-            get
-            {
-                return Page.GetDataItem() as DisplayChannel;
-            }
-        }
-        protected IDisplayResolution Resolution
-        {
-            get
-            {
-                return Page.GetDataItem() as IDisplayResolution;
-            }
-        }
+        protected ViewResultItem Element { get { return this.Page.GetDataItem() as ViewResultItem; } }
+
+        protected int UntranslatedFrases { get; set; }
 
         #endregion
+
     }
 }

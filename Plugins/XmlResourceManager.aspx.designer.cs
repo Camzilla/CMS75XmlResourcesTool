@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins {
+namespace Piab.CMS.Business.Plugins.Common {
     
     
     public partial class XmlResourceManager {
@@ -22,103 +22,13 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins {
         protected global::System.Web.UI.WebControls.DropDownList DdlSelectLanguage;
         
         /// <summary>
-        /// ToolButton11 control.
+        /// Untranslated control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton11;
-        
-        /// <summary>
-        /// actionTab control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.TabStrip actionTab;
-        
-        /// <summary>
-        /// Tab1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab1;
-        
-        /// <summary>
-        /// Tab2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab2;
-        
-        /// <summary>
-        /// Tab4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab4;
-        
-        /// <summary>
-        /// Tab7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab7;
-        
-        /// <summary>
-        /// Tab5 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab5;
-        
-        /// <summary>
-        /// Tab6 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab6;
-        
-        /// <summary>
-        /// Tab3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab3;
-        
-        /// <summary>
-        /// Tab8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab8;
-        
-        /// <summary>
-        /// Tab9 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.Tab Tab9;
+        protected global::System.Web.UI.WebControls.Label Untranslated;
         
         /// <summary>
         /// tabView control.
@@ -128,186 +38,6 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel tabView;
-        
-        /// <summary>
-        /// Pagetypes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Pagetypes;
-        
-        /// <summary>
-        /// PageTypeViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView PageTypeViewControl;
-        
-        /// <summary>
-        /// Save control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton Save;
-        
-        /// <summary>
-        /// Cancel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton Cancel;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent1;
-        
-        /// <summary>
-        /// Properties control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Properties;
-        
-        /// <summary>
-        /// PropertiesViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView PropertiesViewControl;
-        
-        /// <summary>
-        /// ToolButton1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton1;
-        
-        /// <summary>
-        /// ToolButton2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton2;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent2;
-        
-        /// <summary>
-        /// Blocks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Blocks;
-        
-        /// <summary>
-        /// BlockViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView BlockViewControl;
-        
-        /// <summary>
-        /// ToolButton5 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton5;
-        
-        /// <summary>
-        /// ToolButton6 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton6;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent4;
-        
-        /// <summary>
-        /// blockpropertiespertype control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl blockpropertiespertype;
-        
-        /// <summary>
-        /// BlockPropertiesViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView BlockPropertiesViewControl;
-        
-        /// <summary>
-        /// ToolButton12 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton12;
-        
-        /// <summary>
-        /// ToolButton13 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton13;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent7;
         
         /// <summary>
         /// Views control.
@@ -328,22 +58,22 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins {
         protected global::System.Web.UI.WebControls.GridView ViewsControl;
         
         /// <summary>
-        /// ToolButton9 control.
+        /// Save control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton9;
+        protected global::EPiServer.UI.WebControls.ToolButton Save;
         
         /// <summary>
-        /// ToolButton10 control.
+        /// Cancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton10;
+        protected global::EPiServer.UI.WebControls.ToolButton Cancel;
         
         /// <summary>
         /// ScriptReloadPageEvent6 control.
@@ -353,185 +83,5 @@ namespace Nergard.EPi.Plugins.XmlResourceManager.Plugins {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent6;
-        
-        /// <summary>
-        /// Categories control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Categories;
-        
-        /// <summary>
-        /// CategoriesViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView CategoriesViewControl;
-        
-        /// <summary>
-        /// ToolButton7 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton7;
-        
-        /// <summary>
-        /// ToolButton8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton8;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent5 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent5;
-        
-        /// <summary>
-        /// Groups control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Groups;
-        
-        /// <summary>
-        /// TabViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView TabViewControl;
-        
-        /// <summary>
-        /// ToolButton3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton3;
-        
-        /// <summary>
-        /// ToolButton4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton4;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent3;
-        
-        /// <summary>
-        /// DisplayChannels control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DisplayChannels;
-        
-        /// <summary>
-        /// ChannelsViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView ChannelsViewControl;
-        
-        /// <summary>
-        /// ToolButton14 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton14;
-        
-        /// <summary>
-        /// ToolButton15 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton15;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent8;
-        
-        /// <summary>
-        /// DisplayResolutions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl DisplayResolutions;
-        
-        /// <summary>
-        /// ResolutionsViewControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView ResolutionsViewControl;
-        
-        /// <summary>
-        /// ToolButton16 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton16;
-        
-        /// <summary>
-        /// ToolButton17 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.UI.WebControls.ToolButton ToolButton17;
-        
-        /// <summary>
-        /// ScriptReloadPageEvent9 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::EPiServer.ClientScript.WebControls.ScriptReloadPageEvent ScriptReloadPageEvent9;
     }
 }
